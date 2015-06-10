@@ -8,12 +8,12 @@ class InMemoryTaskRepository implements TaskRepository
     private $tasks;
 
     /** @var  TaskDueDate[] */
-    private $taskDueDate;
+    private $dueDates;
 
     function __construct()
     {
         $this->tasks = [];
-        $this->taskDueDate = [];
+        $this->dueDates = [];
     }
 
     /**
@@ -22,6 +22,15 @@ class InMemoryTaskRepository implements TaskRepository
     public function createTask($name)
     {
         $this->tasks[] = new Task($this->generateId(), $name);
+    }
+
+    /**
+     * @param int $id
+     * @param \DateTime $dueDate
+     */
+    public function schedule($id, \DateTime $dueDate)
+    {
+        $this->dueDates[] = new TaskDueDate($id, $dueDate);
     }
 
     /**
@@ -39,15 +48,6 @@ class InMemoryTaskRepository implements TaskRepository
         );
     }
 
-    /**
-     * @param int $id
-     * @param \DateTime $dueDate
-     */
-    public function schedule($id, \DateTime $dueDate)
-    {
-        $this->taskDueDate[] = new TaskDueDate($id, $dueDate);
-    }
-
 
     // ------------------------ Helpers --------------
     /**
@@ -61,7 +61,7 @@ class InMemoryTaskRepository implements TaskRepository
     private function findDueDateFor(Task $task)
     {
         $dueDatesForTask = array_filter(
-            $this->taskDueDate,
+            $this->dueDates,
             function (TaskDueDate $dueDate) use ($task) {
                 return $dueDate->taskId() == $task->id();
             }

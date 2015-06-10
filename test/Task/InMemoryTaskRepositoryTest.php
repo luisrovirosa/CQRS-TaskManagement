@@ -47,9 +47,16 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function schedule_task_set_the_due_date()
     {
-        $dueDate = new \DateTime();
-        $this->repository->schedule(1, $dueDate);
+        $dueDate = $this->schedule('yesterday');
         $this->assertEquals($dueDate, $this->findLastTask()->dueDate());
+    }
+
+    /** @test */
+    public function schedule_task_twice_the_due_date_is_the_latest()
+    {
+        $this->schedule('yesterday');
+        $today = $this->schedule('now');
+        $this->assertEquals($today, $this->findLastTask()->dueDate());
     }
 
     // -------------- Helpers -----------------
@@ -71,5 +78,17 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $lastTaskPosition = count($allTasks) - 1;
 
         return $allTasks[$lastTaskPosition];
+    }
+
+    /**
+     * @param $time
+     * @return \DateTime
+     */
+    private function schedule($time)
+    {
+        $today = new \DateTime($time);
+        $this->repository->schedule(1, $today);
+
+        return $today;
     }
 }
