@@ -2,7 +2,7 @@
 
 namespace CQRS\Task;
 
-class TaskDueDate
+class TaskDueDate implements TaskId
 {
     /** @var  int */
     private $taskId;

@@ -82,35 +82,37 @@ class InMemoryTaskRepository implements TaskRepository
 
     private function findDueDateFor(Task $task)
     {
-        $dueDatesForTask = array_filter(
-            $this->dueDates,
-            function (TaskDueDate $dueDate) use ($task) {
-                return $dueDate->taskId() == $task->id();
-            }
-        );
-        if (count($dueDatesForTask) == 0) {
-            return null;
-        }
+        /** @var TaskDueDate $lastDueDate */
+        $lastDueDate = $this->findLatestObjectRelatedWithTask($task, $this->dueDates);
 
-        $lastDueDate = array_pop($dueDatesForTask);
-
-        return $lastDueDate->dueDate();
+        return $lastDueDate ? $lastDueDate->dueDate() : null;
     }
 
     private function findCompletedOn(Task $task)
     {
-        $dueDatesForTask = array_filter(
-            $this->completedOn,
-            function (TaskCompleted $dueDate) use ($task) {
-                return $dueDate->taskId() == $task->id();
+        /** @var TaskCompleted $lastCompletedOn */
+        $lastCompletedOn = $this->findLatestObjectRelatedWithTask($task, $this->completedOn);
+
+        return $lastCompletedOn ? $lastCompletedOn->completedOn() : null;
+    }
+
+    /**
+     * @param Task $task
+     * @param $input
+     * @return array
+     */
+    private function findLatestObjectRelatedWithTask(Task $task, $input)
+    {
+        $relatedObjects = array_filter(
+            $input,
+            function (TaskId $taskId) use ($task) {
+                return $taskId->taskId() == $task->id();
             }
         );
-        if (count($dueDatesForTask) == 0) {
+        if (count($relatedObjects) == 0) {
             return null;
         }
 
-        $lastDueDate = array_pop($dueDatesForTask);
-
-        return $lastDueDate->completedOn();
+        return array_pop($relatedObjects);
     }
 }

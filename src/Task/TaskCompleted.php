@@ -2,7 +2,7 @@
 
 namespace CQRS\Task;
 
-class TaskCompleted
+class TaskCompleted implements TaskId
 {
     /** @var  int */
     private $taskId;
