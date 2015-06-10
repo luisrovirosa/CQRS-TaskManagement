@@ -38,4 +38,9 @@ class TaskDTO
     {
         return $this->dueDate;
     }
+
+    public function completedOn()
+    {
+        return null;
+    }
 }

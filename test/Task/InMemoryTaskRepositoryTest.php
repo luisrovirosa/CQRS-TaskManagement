@@ -9,6 +9,7 @@ use CQRS\Task\TaskRepository;
 class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     const TASK_NAME = 'My task name';
+    const TASK_ID = 1;
 
     /** @var TaskRepository */
     protected $repository;
@@ -59,6 +60,12 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($today, $this->findLastTask()->dueDate());
     }
 
+    /** @test */
+    public function complete_task_is_null_when_the_task_is_not_completed()
+    {
+        $this->assertNull($this->findLastTask()->completedOn());
+    }
+
     // -------------- Helpers -----------------
 
     /**
@@ -87,7 +94,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     private function schedule($time)
     {
         $today = new \DateTime($time);
-        $this->repository->schedule(1, $today);
+        $this->repository->schedule(self::TASK_ID, $today);
 
         return $today;
     }
