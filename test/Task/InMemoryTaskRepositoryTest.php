@@ -66,6 +66,14 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->findLastTask()->completedOn());
     }
 
+    /** @test */
+    public function complete_task_sets_the_current_date()
+    {
+        $this->repository->complete(self::TASK_ID);
+        $this->assertNotNull($this->findLastTask()->completedOn());
+    }
+
+
     // -------------- Helpers -----------------
 
     /**

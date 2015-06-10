@@ -19,4 +19,9 @@ interface TaskRepository
      * @param \DateTime $dueDate
      */
     public function schedule($id, \DateTime $dueDate);
+
+    /**
+     * @param int $id
+     */
+    public function complete($id);
 }

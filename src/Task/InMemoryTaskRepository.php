@@ -7,13 +7,17 @@ class InMemoryTaskRepository implements TaskRepository
     /** @var Task[] */
     private $tasks;
 
-    /** @var  TaskDueDate[] */
+    /** @var TaskDueDate[] */
     private $dueDates;
+
+    /** @var TaskCompleted[] */
+    private $completedOn;
 
     function __construct()
     {
         $this->tasks = [];
         $this->dueDates = [];
+        $this->completedOn = [];
     }
 
     /**
@@ -31,6 +35,14 @@ class InMemoryTaskRepository implements TaskRepository
     public function schedule($id, \DateTime $dueDate)
     {
         $this->dueDates[] = new TaskDueDate($id, $dueDate);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function complete($id)
+    {
+        $this->completedOn[] = new TaskCompleted($id);
     }
 
     /**
@@ -55,8 +67,9 @@ class InMemoryTaskRepository implements TaskRepository
     private function createDTO(Task $task)
     {
         $dueDate = $this->findDueDateFor($task);
+        $completedOn = $this->findCompletedOn($task);
 
-        return new TaskDTO($task->id(), $task->name(), $dueDate);
+        return new TaskDTO($task->id(), $task->name(), $dueDate, $completedOn);
     }
 
     /**
@@ -82,5 +95,22 @@ class InMemoryTaskRepository implements TaskRepository
         $lastDueDate = array_pop($dueDatesForTask);
 
         return $lastDueDate->dueDate();
+    }
+
+    private function findCompletedOn(Task $task)
+    {
+        $dueDatesForTask = array_filter(
+            $this->completedOn,
+            function (TaskCompleted $dueDate) use ($task) {
+                return $dueDate->taskId() == $task->id();
+            }
+        );
+        if (count($dueDatesForTask) == 0) {
+            return null;
+        }
+
+        $lastDueDate = array_pop($dueDatesForTask);
+
+        return $lastDueDate->completedOn();
     }
 }

@@ -14,14 +14,20 @@ class TaskDTO
      */
     private $name;
 
-    /** @var  \DateTime */
+    /** @var  \DateTime|null */
     private $dueDate;
 
-    function __construct($id, $name, $dueDate = null)
+    /**
+     * @var \DateTime|null
+     */
+    private $completedOn;
+
+    function __construct($id, $name, $dueDate = null, $completedOn = null)
     {
         $this->id = $id;
         $this->name = $name;
         $this->dueDate = $dueDate;
+        $this->completedOn = $completedOn;
     }
 
     public function name()
@@ -41,6 +47,6 @@ class TaskDTO
 
     public function completedOn()
     {
-        return null;
+        return $this->completedOn;
     }
 }
