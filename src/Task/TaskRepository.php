@@ -13,4 +13,10 @@ interface TaskRepository
      * @return Task[]
      */
     public function findAll();
+
+    /**
+     * @param int $id
+     * @param \DateTime $dueDate
+     */
+    public function schedule($id, \DateTime $dueDate);
 }

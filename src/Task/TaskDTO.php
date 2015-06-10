@@ -14,10 +14,14 @@ class TaskDTO
      */
     private $name;
 
-    function __construct($id, $name)
+    /** @var  \DateTime */
+    private $dueDate;
+
+    function __construct($id, $name, $dueDate = null)
     {
         $this->id = $id;
         $this->name = $name;
+        $this->dueDate = $dueDate;
     }
 
     public function name()
@@ -28,5 +32,10 @@ class TaskDTO
     public function id()
     {
         return $this->id;
+    }
+
+    public function dueDate()
+    {
+        return $this->dueDate;
     }
 }

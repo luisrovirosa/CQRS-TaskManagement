@@ -44,6 +44,14 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('CQRS\Task\TaskDTO', $this->findLastTask());
     }
 
+    /** @test */
+    public function schedule_task_set_the_due_date()
+    {
+        $dueDate = new \DateTime();
+        $this->repository->schedule(1, $dueDate);
+        $this->assertEquals($dueDate, $this->findLastTask()->dueDate());
+    }
+
     // -------------- Helpers -----------------
 
     /**
