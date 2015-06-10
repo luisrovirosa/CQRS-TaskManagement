@@ -40,9 +40,7 @@ class InMemoryTaskRepository implements TaskRepository
     {
         return array_map(
             function (Task $task) {
-                $dueDate = $this->findDueDateFor($task);
-
-                return new TaskDTO($task->id(), $task->name(), $dueDate);
+                return $this->createDTO($task);
             },
             $this->tasks
         );
@@ -50,6 +48,17 @@ class InMemoryTaskRepository implements TaskRepository
 
 
     // ------------------------ Helpers --------------
+    /**
+     * @param Task $task
+     * @return TaskDTO
+     */
+    private function createDTO(Task $task)
+    {
+        $dueDate = $this->findDueDateFor($task);
+
+        return new TaskDTO($task->id(), $task->name(), $dueDate);
+    }
+
     /**
      * @return int
      */
