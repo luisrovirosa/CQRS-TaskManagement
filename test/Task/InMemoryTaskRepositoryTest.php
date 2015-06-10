@@ -3,6 +3,7 @@
 namespace CQRS\Test\Task;
 
 use CQRS\Task\InMemoryTaskRepository;
+use CQRS\Task\Task;
 use CQRS\Task\TaskRepository;
 
 class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
@@ -31,6 +32,12 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::TASK_NAME, $this->findLastTask()->name());
     }
 
+    /** @test */
+    public function the_first_task_has_id_1()
+    {
+        $this->assertEquals(1, $this->findLastTask()->id());
+    }
+
     // -------------- Helpers -----------------
 
     /**
@@ -42,7 +49,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return mixed
+     * @return Task
      */
     private function findLastTask()
     {

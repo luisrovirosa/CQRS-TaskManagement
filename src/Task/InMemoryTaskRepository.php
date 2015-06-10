@@ -4,7 +4,7 @@ namespace CQRS\Task;
 
 class InMemoryTaskRepository implements TaskRepository
 {
-
+    /** @var Task[] */
     private $tasks;
 
     function __construct()
@@ -17,7 +17,7 @@ class InMemoryTaskRepository implements TaskRepository
      */
     public function createTask($name)
     {
-        $this->tasks[] = new Task($name);
+        $this->tasks[] = new Task($this->generateId(), $name);
     }
 
     /**
@@ -26,5 +26,13 @@ class InMemoryTaskRepository implements TaskRepository
     public function findAll()
     {
         return $this->tasks;
+    }
+
+    /**
+     * @return int
+     */
+    private function generateId()
+    {
+        return count($this->tasks) + 1;
     }
 }
