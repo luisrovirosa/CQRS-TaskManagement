@@ -3,7 +3,7 @@
 namespace CQRS\Test\Task;
 
 use CQRS\Task\InMemoryTaskRepository;
-use CQRS\Task\Task;
+use CQRS\Task\TaskDTO;
 use CQRS\Task\TaskRepository;
 
 class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
@@ -38,10 +38,16 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $this->findLastTask()->id());
     }
 
+    /** @test */
+    public function the_task_from_repository_is_a_dto()
+    {
+        $this->assertInstanceOf('CQRS\Task\TaskDTO', $this->findLastTask());
+    }
+
     // -------------- Helpers -----------------
 
     /**
-     * @return mixed
+     * @return TaskDTO[]
      */
     private function findAllTasks()
     {
@@ -49,7 +55,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Task
+     * @return TaskDTO
      */
     private function findLastTask()
     {

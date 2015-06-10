@@ -21,11 +21,16 @@ class InMemoryTaskRepository implements TaskRepository
     }
 
     /**
-     * @return Task[]
+     * @return TaskDTO[]
      */
     public function findAll()
     {
-        return $this->tasks;
+        return array_map(
+            function (Task $task) {
+                return new TaskDTO($task->id(), $task->name());
+            },
+            $this->tasks
+        );
     }
 
     /**
