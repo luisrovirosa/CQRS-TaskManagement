@@ -2,17 +2,22 @@
 
 namespace CQRS\Task;
 
-use CQRS\Task\Task;
-
 class InMemoryTaskRepository implements TaskRepository
 {
+
+    private $tasks;
+
+    function __construct()
+    {
+        $this->tasks = [];
+    }
 
     /**
      * @param string $name
      */
     public function createTask($name)
     {
-        // TODO: Implement createTask() method.
+        $this->tasks[] = new Task($name);
     }
 
     /**
@@ -20,6 +25,6 @@ class InMemoryTaskRepository implements TaskRepository
      */
     public function findAll()
     {
-        return array('');
+        return $this->tasks;
     }
 }
