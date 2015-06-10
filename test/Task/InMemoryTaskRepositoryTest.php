@@ -31,6 +31,8 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::TASK_NAME, $this->findLastTask()->name());
     }
 
+    // -------------- Helpers -----------------
+
     /**
      * @return mixed
      */
