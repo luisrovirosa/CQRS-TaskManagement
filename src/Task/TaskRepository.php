@@ -24,4 +24,6 @@ interface TaskRepository
      * @param int $id
      */
     public function complete($id);
+
+    public function findTasksAssignedTo($userName);
 }

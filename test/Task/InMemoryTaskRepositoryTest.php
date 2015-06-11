@@ -10,6 +10,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     const TASK_NAME = 'My task name';
     const TASK_ID = 1;
+    const USER = 'Luis Rovirosa';
 
     /** @var TaskRepository */
     protected $repository;
@@ -71,6 +72,13 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->repository->complete(self::TASK_ID);
         $this->assertNotNull($this->findLastTask()->completedOn());
+    }
+
+    /** @test */
+    public function retrieve_my_tasks_gets_no_task_when_there_is_no_task_assigned_to_me()
+    {
+        $myTasks = $this->repository->findTasksAssignedTo(self::USER);
+        $this->assertCount(0, $myTasks);
     }
 
 

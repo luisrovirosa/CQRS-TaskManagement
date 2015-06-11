@@ -58,6 +58,11 @@ class InMemoryTaskRepository implements TaskRepository
         );
     }
 
+    public function findTasksAssignedTo($userName)
+    {
+        return array();
+    }
+
 
     // ------------------------ Helpers --------------
     /**
