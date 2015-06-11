@@ -2,9 +2,10 @@
 
 namespace CQRS\Test\Task;
 
+use CQRS\Task\CommandTaskRepository;
 use CQRS\Task\InMemoryTaskRepository;
+use CQRS\Task\QueryTaskRepository;
 use CQRS\Task\TaskDTO;
-use CQRS\Task\TaskRepository;
 
 class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,14 +13,19 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     const TASK_ID = 1;
     const USER = 'Luis Rovirosa';
 
-    /** @var TaskRepository */
-    protected $repository;
+    /** @var QueryTaskRepository */
+    protected $queryRepository;
+
+    /** @var CommandTaskRepository */
+    protected $commandTaskRepository;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->repository = new InMemoryTaskRepository();
-        $this->repository->createTask(self::TASK_NAME);
+        $repository = new InMemoryTaskRepository();
+        $this->queryRepository = $repository;
+        $this->commandTaskRepository = $repository;
+        $this->queryRepository->createTask(self::TASK_NAME);
     }
 
     /** @test */
@@ -70,22 +76,22 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function complete_task_sets_the_current_date()
     {
-        $this->repository->complete(self::TASK_ID);
+        $this->commandTaskRepository->complete(self::TASK_ID);
         $this->assertNotNull($this->findLastTask()->completedOn());
     }
 
     /** @test */
     public function retrieve_my_tasks_gets_no_task_when_there_is_no_task_assigned_to_me()
     {
-        $myTasks = $this->repository->findTasksAssignedTo(self::USER);
+        $myTasks = $this->queryRepository->findTasksAssignedTo(self::USER);
         $this->assertCount(0, $myTasks);
     }
 
     /** @test */
     public function retrieve_the_task_assigned_to_me_after_assign_the_task_to_me()
     {
-        $this->repository->assignTo(self::TASK_ID, self::USER);
-        $myTasks = $this->repository->findTasksAssignedTo(self::USER);
+        $this->commandTaskRepository->assignTo(self::TASK_ID, self::USER);
+        $myTasks = $this->queryRepository->findTasksAssignedTo(self::USER);
         $this->assertCount(1, $myTasks);
         $this->assertContains(self::USER, $myTasks[0]->assignedTo());
     }
@@ -97,7 +103,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     private function findAllTasks()
     {
-        return $this->repository->findAll();
+        return $this->queryRepository->findAll();
     }
 
     /**
@@ -118,7 +124,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
     private function schedule($time)
     {
         $today = new \DateTime($time);
-        $this->repository->schedule(self::TASK_ID, $today);
+        $this->commandTaskRepository->schedule(self::TASK_ID, $today);
 
         return $today;
     }

@@ -2,7 +2,7 @@
 
 namespace CQRS\Task;
 
-class InMemoryTaskRepository implements TaskRepository
+class InMemoryTaskRepository implements QueryTaskRepository, CommandTaskRepository
 {
     /** @var Task[] */
     private $tasks;
