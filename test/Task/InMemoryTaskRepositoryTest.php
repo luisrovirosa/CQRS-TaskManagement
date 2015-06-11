@@ -81,6 +81,13 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $myTasks);
     }
 
+    /** @test */
+    public function retrieve_the_task_assigned_to_me_after_assign_the_task_to_me()
+    {
+        $this->repository->assignTo(self::TASK_ID, self::USER);
+        $myTasks = $this->repository->findTasksAssignedTo(self::USER);
+        $this->assertCount(1, $myTasks);
+    }
 
     // -------------- Helpers -----------------
 

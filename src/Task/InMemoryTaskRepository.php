@@ -13,11 +13,15 @@ class InMemoryTaskRepository implements TaskRepository
     /** @var TaskCompleted[] */
     private $completedOn;
 
+    /** @var TaskAssignedTo[] */
+    private $assignedTo;
+
     function __construct()
     {
         $this->tasks = [];
         $this->dueDates = [];
         $this->completedOn = [];
+        $this->assignedTo = [];
     }
 
     /**
@@ -38,11 +42,11 @@ class InMemoryTaskRepository implements TaskRepository
     }
 
     /**
-     * @param int $id
+     * @param int $taskId
      */
-    public function complete($id)
+    public function complete($taskId)
     {
-        $this->completedOn[] = new TaskCompleted($id);
+        $this->completedOn[] = new TaskCompleted($taskId);
     }
 
     /**
@@ -60,8 +64,22 @@ class InMemoryTaskRepository implements TaskRepository
 
     public function findTasksAssignedTo($userName)
     {
-        return array();
+        $allTasks = $this->findAll();
+
+        return array_filter(
+            $allTasks,
+            function (TaskDTO $taskDTO) use ($userName) {
+                return in_array($userName, $taskDTO->assignedTo());
+            }
+        );
     }
+
+    public function assignTo($taskId, $userName)
+    {
+        $this->assignedTo[] = new TaskAssignedTo($taskId, $userName);
+    }
+
+
 
 
     // ------------------------ Helpers --------------
@@ -73,8 +91,9 @@ class InMemoryTaskRepository implements TaskRepository
     {
         $dueDate = $this->findDueDateFor($task);
         $completedOn = $this->findCompletedOn($task);
+        $assignedTo = $this->findAssignedTo($task);
 
-        return new TaskDTO($task->id(), $task->name(), $dueDate, $completedOn);
+        return new TaskDTO($task->id(), $task->name(), $dueDate, $completedOn, $assignedTo);
     }
 
     /**
@@ -108,16 +127,38 @@ class InMemoryTaskRepository implements TaskRepository
      */
     private function findLatestObjectRelatedWithTask(Task $task, $input)
     {
-        $relatedObjects = array_filter(
-            $input,
-            function (TaskId $taskId) use ($task) {
-                return $taskId->taskId() == $task->id();
-            }
-        );
+        $relatedObjects = $this->findAllObjectsRelatedWithTask($task, $input);
         if (count($relatedObjects) == 0) {
             return null;
         }
 
         return array_pop($relatedObjects);
+    }
+
+    private function findAssignedTo(Task $task)
+    {
+        $assignedTo = $this->findAllObjectsRelatedWithTask($task, $this->assignedTo);
+
+        return array_map(
+            function (TaskAssignedTo $assignedTo) {
+                return $assignedTo->assignedTo();
+            },
+            $assignedTo
+        );
+    }
+
+    /**
+     * @param Task $task
+     * @param $input
+     * @return array
+     */
+    private function findAllObjectsRelatedWithTask(Task $task, $input)
+    {
+        return array_filter(
+            $input,
+            function (TaskId $taskId) use ($task) {
+                return $taskId->taskId() == $task->id();
+            }
+        );
     }
 }

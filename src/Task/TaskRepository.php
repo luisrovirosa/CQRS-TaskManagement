@@ -21,9 +21,11 @@ interface TaskRepository
     public function schedule($id, \DateTime $dueDate);
 
     /**
-     * @param int $id
+     * @param int $taskId
      */
-    public function complete($id);
+    public function complete($taskId);
 
     public function findTasksAssignedTo($userName);
+
+    public function assignTo($taskId, $userName);
 }
