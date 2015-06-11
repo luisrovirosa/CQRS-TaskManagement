@@ -87,6 +87,7 @@ class InMemoryTaskRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->repository->assignTo(self::TASK_ID, self::USER);
         $myTasks = $this->repository->findTasksAssignedTo(self::USER);
         $this->assertCount(1, $myTasks);
+        $this->assertContains(self::USER, $myTasks[0]->assignedTo());
     }
 
     // -------------- Helpers -----------------

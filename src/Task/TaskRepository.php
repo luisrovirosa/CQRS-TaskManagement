@@ -10,7 +10,7 @@ interface TaskRepository
     public function createTask($name);
 
     /**
-     * @return Task[]
+     * @return TaskDTO[]
      */
     public function findAll();
 
@@ -25,6 +25,10 @@ interface TaskRepository
      */
     public function complete($taskId);
 
+    /**
+     * @param $userName
+     * @return TaskDTO[]
+     */
     public function findTasksAssignedTo($userName);
 
     public function assignTo($taskId, $userName);
